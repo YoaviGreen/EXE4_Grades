@@ -45,7 +45,6 @@ class MainWindow(QWidget):
         self.update_button.setGeometry(255, 75, 150, 35)
         self.update_button.clicked.connect(self.update_file)
 
-
         self.about_button = QPushButton('About', self)
         self.about_button.setGeometry(440, 75, 140, 35)
         self.about_button.clicked.connect(self.show_about_window)
