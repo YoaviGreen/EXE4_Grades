@@ -1,4 +1,6 @@
 from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QLineEdit, QSpinBox, QTableWidget, QTableWidgetItem, QFileDialog
+from PySide6.QtCore import QUrl
+from PySide6.QtGui import QDesktopServices
 from About import AboutWindow
 
 class MainWindow(QWidget):
@@ -41,6 +43,8 @@ class MainWindow(QWidget):
 
         self.update_button = QPushButton('Update File', self)
         self.update_button.setGeometry(255, 75, 150, 35)
+        self.update_button.clicked.connect(self.update_file)
+
 
         self.about_button = QPushButton('About', self)
         self.about_button.setGeometry(440, 75, 140, 35)
@@ -92,6 +96,20 @@ class MainWindow(QWidget):
                 new_grade = 100
             self.corrected_grades[i] = new_grade
         self.update_table()
+
+    def update_file(self):
+        if self.selected_file == '':
+            return
+
+        with open(self.selected_file, 'r') as f:
+            header = next(f)
+
+        with open(self.selected_file, 'w') as f:
+            f.write(header)
+            for i in range(len(self.student_ids)):
+                f.write(f'{self.student_ids[i]},{self.corrected_grades[i]}\n')
+
+        QDesktopServices.openUrl(QUrl.fromLocalFile(self.selected_file))
 
     def show_about_window(self):
         self.about_window.show()
