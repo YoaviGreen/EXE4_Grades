@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QLineEdit, QSpinBox
+from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QLineEdit, QSpinBox, QTableWidget
 from About import AboutWindow
 
 class MainWindow(QWidget):
@@ -43,6 +43,14 @@ class MainWindow(QWidget):
         self.about_button = QPushButton('About', self)
         self.about_button.setGeometry(440, 75, 140, 35)
         self.about_button.clicked.connect(self.show_about_window)
+
+        self.table = QTableWidget(50, 3, self)
+        self.table.setGeometry(20, 130, 560, 480)
+        self.table.setHorizontalHeaderLabels(['ID', 'Original Grades', 'Corrected Grades'])
+        self.table.setColumnWidth(0, 170)
+        self.table.setColumnWidth(1, 160)
+        self.table.setColumnWidth(2, 160)
+        self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
     def show_about_window(self):
         self.about_window.show()
