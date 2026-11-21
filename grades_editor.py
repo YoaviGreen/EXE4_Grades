@@ -37,6 +37,7 @@ class MainWindow(QWidget):
         self.bonus_box = QSpinBox(self)
         self.bonus_box.setGeometry(135, 75, 100, 35)
         self.bonus_box.setRange(0, 100)
+        self.bonus_box.editingFinished.connect(self.calculate_bonus)
 
         self.update_button = QPushButton('Update File', self)
         self.update_button.setGeometry(255, 75, 150, 35)
@@ -82,6 +83,15 @@ class MainWindow(QWidget):
             self.table.setItem(row, 0, QTableWidgetItem(self.student_ids[row]))
             self.table.setItem(row, 1, QTableWidgetItem(str(self.original_grades[row])))
             self.table.setItem(row, 2, QTableWidgetItem(str(self.corrected_grades[row])))
+
+    def calculate_bonus(self):
+        bonus = self.bonus_box.value()
+        for i in range(len(self.original_grades)):
+            new_grade = self.original_grades[i] + bonus
+            if new_grade > 100:
+                new_grade = 100
+            self.corrected_grades[i] = new_grade
+        self.update_table()
 
     def show_about_window(self):
         self.about_window.show()
