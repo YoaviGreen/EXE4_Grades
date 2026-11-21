@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QLineEdit, QSpinBox, QTableWidget
+from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QLineEdit, QSpinBox, QTableWidget, QTableWidgetItem, QFileDialog
 from About import AboutWindow
 
 class MainWindow(QWidget):
@@ -20,6 +20,7 @@ class MainWindow(QWidget):
 
         self.choose_button = QPushButton('Choose File', self)
         self.choose_button.setGeometry(20, 20, 140, 35)
+        self.choose_button.clicked.connect(self.choose_file)
 
         self.file_label = QLabel('Selected file:', self)
         self.file_label.setGeometry(180, 20, 100, 35)
@@ -51,6 +52,36 @@ class MainWindow(QWidget):
         self.table.setColumnWidth(1, 160)
         self.table.setColumnWidth(2, 160)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+
+    def choose_file(self):
+        file_name, file_filter = QFileDialog.getOpenFileName(self, 'Choose grades file', '', 'CSV files (*.csv)')
+        if file_name == '':
+            return
+
+        self.selected_file = file_name
+        self.file_box.setText(file_name)
+
+        self.student_ids = []
+        self.original_grades = []
+        self.corrected_grades = []
+
+        with open(file_name, 'r') as f:
+            next(f)
+            for line in f:
+                student_id, grade = line.strip().split(',')
+                self.student_ids.append(student_id)
+                self.original_grades.append(int(grade))
+                self.corrected_grades.append(int(grade))
+
+        self.bonus_box.setValue(0)
+        self.update_table()
+
+    def update_table(self):
+        self.table.clearContents()
+        for row in range(len(self.student_ids)):
+            self.table.setItem(row, 0, QTableWidgetItem(self.student_ids[row]))
+            self.table.setItem(row, 1, QTableWidgetItem(str(self.original_grades[row])))
+            self.table.setItem(row, 2, QTableWidgetItem(str(self.corrected_grades[row])))
 
     def show_about_window(self):
         self.about_window.show()
